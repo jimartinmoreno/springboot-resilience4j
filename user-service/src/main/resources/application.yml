@@ -2,10 +2,12 @@ management:
   health:
     circuitbreakers:
       enabled: true
+    ratelimiters:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: health
+        include: '*'
   endpoint:
     health:
       show-details: always
@@ -24,13 +26,12 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         slidingWindowSize: 10
         slidingWindowType: COUNT_BASED
-
-
+#        recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
   retry:
     instances:
       userService:
-        maxRetryAttempts: 5
-        waitDuration: 10s
+        maxRetryAttempts: 3
+        waitDuration: 3s
 
 
 
