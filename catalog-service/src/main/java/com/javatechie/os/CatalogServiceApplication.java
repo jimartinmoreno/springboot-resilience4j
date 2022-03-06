@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-@RestController
-@RequestMapping("/orders")
 public class CatalogServiceApplication {
 
     @Autowired
@@ -39,16 +37,6 @@ public class CatalogServiceApplication {
                                 new Order("Fan", "electronics", "black", 50000)
                         )
                         .collect(Collectors.toList()));
-    }
-
-    @GetMapping
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
-    }
-
-    @GetMapping("/{category}")
-    public List<Order> getOrdersByCategory(@PathVariable String category) {
-        return orderRepository.findByCategory(category);
     }
 
     public static void main(String[] args) {
