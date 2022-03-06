@@ -1,6 +1,7 @@
 package com.javatechie.us.services;
 
 import com.javatechie.us.dto.OrderDTO;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -33,18 +34,22 @@ public class CatalogService {
      * @CircuitBreaker: This annotation can be applied to a class or a specific method. Applying it on a class is equivalent
      * to applying it on all its public methods. The annotation enables backend monitoring for all methods where it is applied.
      * Backend monitoring is performed via a circuit breaker.
-     *
      * @Retry: This annotation can be applied to a class or a specific method. Applying it on a class is equivalent to
      * applying it on all its public methods. The annotation enables backend retry for all methods where it is applied.
      * Backend retry is performed via a retry.
      */
+
+    // The annotation enables throttling for all methods where it is applied. Throttling monitoring is performed via a rate limiter.
+    // @RateLimiter(name = USER_SERVICE)
+
+    // @Bulkhead(name = USER_SERVICE, fallbackMethod = "getAllAvailableProducts")
+
+    // The annotation enables time limiter for all methods where it is applied.
+    // @TimeLimiter(name = USER_SERVICE, fallbackMethod = "getAllAvailableProducts")
     // Se llama inmediatamente al fallback si falla
-    // @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "getAllAvailableProducts")
+    @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "getAllAvailableProducts")
     // reintenta n veces y si no puede llama al fallback si falla
     @Retry(name = USER_SERVICE, fallbackMethod = "getAllAvailableProducts")
-    //    @RateLimiter(name = USER_SERVICE)
-    //    @Bulkhead(name = USER_SERVICE)
-    //    @TimeLimiter(name = USER_SERVICE)
     public List<OrderDTO> getOrdersByCategory(String category) {
         log.info("getOrdersByCategory by category {}", category);
         String url = category == null ? BASEURL : BASEURL + "/" + category;

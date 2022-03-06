@@ -1,3 +1,4 @@
+# Actuator config
 management:
   health:
     circuitbreakers:
@@ -12,21 +13,31 @@ management:
     health:
       show-details: always
 
-
 resilience4j:
   circuitbreaker:
     instances:
       userService:
+        # Aparecen los datos en el actuator
         registerHealthIndicator: true
+        # The emitted CircuitBreaker, Retry, RateLimiter, Bulkhead and TimeLimiter events are stored in a separate circular
+        # event consumer buffers
         eventConsumerBufferSize: 10
+        # Si el 50 % de las peticiones falla pasa el CB a estado Open
         failureRateThreshold: 50
+        # Numero de llamadas para comprobar el Threshold
         minimumNumberOfCalls: 5
+        # Habilita el paso automatico de open a half open
         automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
+        # Tiempo desde Open a Half Open
+        waitDurationInOpenState: 10s
+        # Numero de llamadas en estado Hald Open para y si tras ese numero de llamadas se ha llamado con exito pasa a Closed
+        # Si no pasa otra vez a open
         permittedNumberOfCallsInHalfOpenState: 3
+        # Configures the type of the sliding window which is used to record the outcome of calls when the CircuitBreaker is closed.
         slidingWindowSize: 10
+        # Count based & Time based
         slidingWindowType: COUNT_BASED
-#        recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
+        # recordFailurePredicate: io.github.robwin.exception.RecordFailurePredicate
   retry:
     instances:
       userService:
